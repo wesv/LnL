@@ -3,7 +3,7 @@ package game.element.card;
 /**
  * Created by Squiggs on 12/14/2016.
  */
-public abstract class MainDeckCard extends Card implements Logic {
+public abstract class MDCard extends Card implements Logic {
     protected Color color;
 
     public Color getColor() {

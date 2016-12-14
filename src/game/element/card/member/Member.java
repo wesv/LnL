@@ -1,13 +1,13 @@
 package game.element.card.member;
 
-import game.element.card.MainDeckCard;
+import game.element.card.MDCard;
 
 import java.util.List;
 
 /**
  * Created by Squiggs on 12/14/2016.
  */
-public abstract class Member extends MainDeckCard {
+public abstract class Member extends MDCard {
     protected boolean isStanding;
     protected String cardTitle;
     protected int level;
@@ -16,8 +16,18 @@ public abstract class Member extends MainDeckCard {
     protected int power;
     protected int limit;
     protected int aura;
-    protected String covanter;
+
+    protected Member covenanter;
     protected List<String> attributes;
+
+
+    public Member getCovenanter() {
+        return covenanter;
+    }
+
+    public void setCovenanter(Member covenanter) {
+        this.covenanter = covenanter;
+    }
 
 
     public int getLevel() {
