@@ -1,40 +1,25 @@
 import game.element.card.World;
 import game.element.card.member.Logicalist;
 import game.element.field.Deck;
+import game.element.field.ShuffleList;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by Squiggs on 12/14/2016.
  */
 public class Main {
     public static void main(String[] args) {
-        Deck myDeck = new Deck();
+        LinkedList<Integer> test = new LinkedList<>();
 
-        for(int x = 0; x < 5; x++) {
-            myDeck.add(new Logicalist() {
-                @Override
-                public void resolve(int effectNum) {
-
-                }
-
-                @Override
-                public void useLogic() {
-
-                }
-            });
+        for(int x = 0; x < 50; x++){
+            test.add(x+1);
         }
 
-        System.out.println(myDeck);
+        System.out.println(test);
 
-        myDeck.addTo(new Logicalist() {
-            @Override
-            public void resolve(int effectNum) {
-
-            }
-
-            @Override
-            public void useLogic() {
-
-            }
-        }, 2);
+        new ShuffleList<Integer>().shuffle(test);
+        System.out.println(test);
     }
 }
