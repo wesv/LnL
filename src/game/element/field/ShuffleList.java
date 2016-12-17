@@ -1,9 +1,6 @@
 package game.element.field;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Squiggs on 12/16/2016.
@@ -13,8 +10,8 @@ public class ShuffleList<T> {
     protected static final double BELL_CURVE_SD = 1.0/2.0;
 
     public void shuffle(final List<T> list) {
-        cut(list);
-        cut(list);
+        cutDeck(list);
+        cutDeck(list);
        // cut(list);
 
     }
@@ -36,7 +33,7 @@ public class ShuffleList<T> {
      * Cuts the deck in a random location weighted more heavily towards the center
      * @param list the list that will be cut.
      */
-    private void cut(final List<T> list) {
+    private void cutDeck(final List<T> list) {
         int humanCurError = (int) Math.round(bellCurve(Math.random(), BELL_CURVE_SD) * list.size() / 2.0);
 
         //Chance for the cut to go both ways
@@ -63,6 +60,28 @@ public class ShuffleList<T> {
         list.addAll(secondHalf);
         list.addAll(firstHalf);
         System.out.println(list);
+    }
+
+    /* Should cut the eck into numSplit splits */
+    private List<List<T>> cut(final List<T> list, int numSplits) {
+
+        LinkedList<List<T>> splits = new LinkedList<>();
+        /*
+
+
+        Collection<T> firstHalf = new ArrayList<>(firstHalfSize);
+        Collection<T> secondHalf = new ArrayList<>(secondHalfSize);
+
+        //Get first half of list
+        for(int x = 0; x < firstHalfSize; x++) {
+            firstHalf.add(list.remove(0));
+        }
+
+        //Get the Second half of the list
+        for(int x = 0; x < secondHalfSize; x++) {
+            secondHalf.add(list.remove(0));
+        }*/
+        return null;
     }
 
 }
