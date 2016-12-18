@@ -12,7 +12,7 @@ public class ShuffleList<T> {
     public void shuffle(final List<T> list) {
         cutDeck(list);
         cutDeck(list);
-       // cut(list);
+//       cut(list, new ArrayList<T>(), new ArrayList<T>(), new ArrayList<T>());
 
     }
 
@@ -20,7 +20,7 @@ public class ShuffleList<T> {
      * Approximates a normal bell curve distribution
      * @param x a value between 0 and 1
      * @param standardDeviation how "wide" the bell curve is. The smaller the value, the tighter the curve
-     * @return the y value in a normal distribution
+     * @return the y value in a normal bell curve distribution
      */
     private double bellCurve(double x, double standardDeviation) {
         double constant = 1.0/Math.sqrt(2 * Math.PI);
@@ -31,57 +31,66 @@ public class ShuffleList<T> {
 
     /**
      * Cuts the deck in a random location weighted more heavily towards the center
+     * The list object given will have been cut.
      * @param list the list that will be cut.
      */
     private void cutDeck(final List<T> list) {
-        int humanCurError = (int) Math.round(bellCurve(Math.random(), BELL_CURVE_SD) * list.size() / 2.0);
 
-        //Chance for the cut to go both ways
-        if(Math.random() > 0.5)
-            humanCurError *= -1;
+        List<T> firstHalf = new LinkedList<>();
+        List<T> secondHalf = new LinkedList<>();
 
-        int firstHalfSize = list.size() / 2 + humanCurError;
-        int secondHalfSize = list.size() - firstHalfSize;
+        //Cut the list into two parts: the first half, and the second half
+        cut(list, firstHalf, secondHalf);
 
-        Collection<T> firstHalf = new ArrayList<>(firstHalfSize);
-        Collection<T> secondHalf = new ArrayList<>(secondHalfSize);
-
-        //Get first half of list
-        for(int x = 0; x < firstHalfSize; x++) {
-            firstHalf.add(list.remove(0));
-        }
-
-        //Get the Second half of the list
-        for(int x = 0; x < secondHalfSize; x++) {
-            secondHalf.add(list.remove(0));
-        }
-
-        //Cut the list
         list.addAll(secondHalf);
         list.addAll(firstHalf);
         System.out.println(list);
     }
 
-    /* Should cut the eck into numSplit splits */
-    private List<List<T>> cut(final List<T> list, int numSplits) {
+    /**
+     * Cuts a list into any number of other lists. This specific instance of cut will cut the list into approximately equally.
+     * At the end of the function, all of the elements in list will be placed into all lists in listsToSplitTo.
+     * This method calculates human error by approximating a bell curve distribution and mapping it appropriately to each list to split to.
+     *
+     *
+     * @param list the list to split
+     * @param listToSplitTo an output parameter that the list will split into
+     */
+    private void cut(final List<T> list, final List<T>... listToSplitTo) {
+        int numLists = listToSplitTo.length;
+        int[] cardsPerList = new int[numLists];
 
-        LinkedList<List<T>> splits = new LinkedList<>();
-        /*
+        { // Init cardsPerList appropriately for the situation
+            int numCardsTaken = 0;
+            int remainingCards;
+            int remainingLists;
+            int humanCutError;
 
+            for (int x = 0; x < numLists - 1; x++) {
 
-        Collection<T> firstHalf = new ArrayList<>(firstHalfSize);
-        Collection<T> secondHalf = new ArrayList<>(secondHalfSize);
+                remainingCards = (list.size() - 1) - numCardsTaken;
+                remainingLists = numLists - x;
 
-        //Get first half of list
-        for(int x = 0; x < firstHalfSize; x++) {
-            firstHalf.add(list.remove(0));
+                humanCutError = (int) Math.round(bellCurve(Math.random(), BELL_CURVE_SD) * remainingCards / remainingLists);
+                if (Math.random() > 0.5)
+                    humanCutError *= -1;
+
+                cardsPerList[x] = remainingCards / remainingLists + humanCutError;
+                numCardsTaken += cardsPerList[x];
+            }
+
+            cardsPerList[numLists - 1] = list.size() - numCardsTaken;
         }
 
-        //Get the Second half of the list
-        for(int x = 0; x < secondHalfSize; x++) {
-            secondHalf.add(list.remove(0));
-        }*/
-        return null;
+        { // Add elements from list into the appropriate listToSplitTo
+            for (int subset = 0; subset < numLists; subset++) {
+                for (int x = 0; x < cardsPerList[subset]; x++) {
+                    listToSplitTo[subset].add(list.remove(0));
+                }
+            }
+        }
+
+
     }
 
 }
