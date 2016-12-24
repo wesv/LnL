@@ -7,11 +7,12 @@ import java.util.*;
  */
 public class ShuffleList<T> {
 
-    protected static final double BELL_CURVE_SD = 1.0/2.0;
+    protected static final double BELL_CURVE_SD = 1.0/3.0;
 
     public void shuffle(final List<T> list) {
-        cutDeck(list);
-        cutDeck(list);
+        riffle(list);
+        //cutDeck(list);
+        //cutDeck(list);
 //       cut(list, new ArrayList<T>(), new ArrayList<T>(), new ArrayList<T>());
 
     }
@@ -68,12 +69,16 @@ public class ShuffleList<T> {
 
             for (int x = 0; x < numLists - 1; x++) {
 
-                remainingCards = (list.size() - 1) - numCardsTaken;
+                remainingCards = list.size() - numCardsTaken;
                 remainingLists = numLists - x;
 
+                //Get the bell curve value at random x between 0-1, then map that random value to how many cards are left with how many buckets are left
                 humanCutError = (int) Math.round(bellCurve(Math.random(), BELL_CURVE_SD) * remainingCards / remainingLists);
                 if (Math.random() > 0.5)
                     humanCutError *= -1;
+
+                //TODO remove this line. This is a temp line to remove the human error in the cut for testing other parts
+                humanCutError = 0;
 
                 cardsPerList[x] = remainingCards / remainingLists + humanCutError;
                 numCardsTaken += cardsPerList[x];
@@ -89,6 +94,73 @@ public class ShuffleList<T> {
                 }
             }
         }
+    }
+
+    public void riffle(final List<T> list) {
+        List<T> left  = new LinkedList<>();
+        List<T> right = new LinkedList<>();
+
+        cut(list, left, right);
+
+        //System.out.println(left);
+        //System.out.println(right);
+
+        /*int minSize = Math.min(left.size(), right.size());
+        for(int x=0; x < minSize; x++) {
+            list.add(left.remove(0));
+            list.add(right.remove(0));
+        }*/
+//TODO this needs fixed
+        System.out.println(bellCurve(0, BELL_CURVE_SD));
+        System.out.println(bellCurve(, BELL_CURVE_SD));
+        while(!(left.isEmpty() || right.isEmpty())){
+            int sizeDif = Math.abs(left.size()-right.size());
+
+            /*
+            sizeDif = 0: 50% chance of either
+            sizeDif = 1; 60% chance of lower side
+            sizeDif = 2; 70% chance of lower side
+            sizeDif = 3: 80% chance of lower side
+            sizeDif = 4:
+
+             */
+
+            double lowersChance = 0.5 + 0.5/15 * sizeDif;
+
+            List<T> lower = left.size() <= right.size() ? left: right;
+            List<T> higher = left.size() > right.size() ? left: right;
+
+            if(Math.random() > lowersChance) {
+                list.add(lower.remove(0));
+            } else
+                list.add(higher.remove(0));
+            /*
+            double leftChance = bellCurve(Math.random(), BELL_CURVE_SD) * right.size();
+            double rightChance = bellCurve(Math.random(), BELL_CURVE_SD) * left.size();
+            if(leftChance > rightChance)
+                list.add(left.remove(0));
+            else
+                list.add(right.remove(0));
+*/
+            /*if(left.size() > right.size())
+                list.add(left.remove(0));
+            else if(right.size() > left.size())
+                list.add(right.remove(0));
+            else {
+                if(Math.random() > 0.5)
+                    list.add(left.remove(0));
+                else
+                    list.add(right.remove(0));
+            }*/
+        }
+
+
+            //Add the rest of the elements from the left, if any
+        while(!left.isEmpty()) list.add(left.remove(0));
+
+        //ADd the rest of the elements from the right, if any
+        while(!right.isEmpty()) list.add(right.remove(0));
+
 
 
     }

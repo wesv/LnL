@@ -14,7 +14,7 @@ public class Main {
         LinkedList<Integer> test = new LinkedList<>();
 
         for(int x = 0; x < 50; x++){
-            test.add(x+1);
+            test.add(x/4 + 1);
         }
 
         System.out.println(test);
